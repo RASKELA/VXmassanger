@@ -2,6 +2,12 @@
 
 VX is a self-hosted web messenger with e-mail one-time-code sign-in, image messages, direct and group conversations, profiles, reactions, message editing/deletion, read indicators and browser voice/video calls. It has no external JavaScript dependencies: Node.js 20+ is enough.
 
+## Tor address for users
+
+Open the shared VX service in Tor Browser: [http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/](http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/)
+
+127.0.0.1:3000 is only for the host computer running VX. Other users should use the onion address above; it remains available while that host's VX and Tor processes are running.
+
 ## Included features
 
 - Passwordless registration and sign-in by e-mail OTP.
@@ -18,7 +24,7 @@ VX is a self-hosted web messenger with e-mail one-time-code sign-in, image messa
 1. Copy `.env.example` to `.env` and configure SMTP. Keep `.env` private: it is excluded from Git.
 2. Leave `TOR_ONLY=true`. This disables browser calls, whose media traffic cannot reliably be kept inside Tor.
 3. Run `node server.js` in this folder.
-4. Open `http://127.0.0.1:3000`.
+4. On the host computer only, open `http://127.0.0.1:3000`. All other users open the Tor address above in Tor Browser.
 Without SMTP, local development still works: by default the one-time code is displayed in the browser response. Set `DEV_SHOW_OTP=false` before exposing the service.
 
 ## Tor-only mode
