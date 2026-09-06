@@ -1,59 +1,60 @@
 # VX messenger
 
-VX is a self-hosted web messenger with e-mail one-time-code sign-in, image messages, direct and group conversations, profiles, reactions, message editing/deletion, read indicators and browser voice/video calls. It has no external JavaScript dependencies: Node.js 20+ is enough.
+VX — самостоятельный веб-мессенджер с входом по одноразовому коду из электронной почты, изображениями в сообщениях, личными и групповыми чатами, профилями, реакциями, редактированием и удалением сообщений, индикаторами прочтения и голосовыми/видеозвонками в браузере. Внешние JavaScript-зависимости не нужны: достаточно Node.js 20+.
 
-## Tor address for users
+## Tor-адрес для пользователей
 
-Open the shared VX service in Tor Browser: [http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/](http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/)
+Откройте общий сервис VX в Tor Browser: [http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/](http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion/)
 
-127.0.0.1:3000 is only for the host computer running VX. Other users should use the onion address above; it remains available while that host's VX and Tor processes are running.
+`127.0.0.1:3000` доступен только на компьютере, где запущен VX. Остальным пользователям следует открыть указанный выше onion-адрес; он работает, пока на хост-компьютере запущены процессы VX и Tor.
 
-## Included features
+## Возможности
 
-- Passwordless registration and sign-in by e-mail OTP.
-- Live in-browser updates with Server-Sent Events, with a resilient polling fallback.
-- Direct chats and owner-managed group channels, including registered-contact search when creating a group.
-- A copyable invitation containing the current VX server address, so friends can join the same server before being added to chats or groups.
-- Image uploads (PNG, JPEG, GIF and WebP, maximum 5 MB), reactions, replies, edits, deletion, typing indicators and unread counters.
-- Creator-owned sticker packs: upload a first sticker to create a pack, add up to 120 stickers, install available packs and send stickers in conversations.
-- Display name, bio and optional profile image.
-- Optional one-to-one voice/video calls with WebRTC and browser-standard DTLS-SRTP/ECDH key negotiation when `TOR_ONLY=false`.
+- Регистрация и вход без пароля по одноразовому коду (OTP), отправленному на электронную почту.
+- Обновления в браузере в реальном времени через Server-Sent Events с надёжным резервным опросом.
+- Личные чаты и управляемые владельцем групповые каналы, включая поиск зарегистрированных контактов при создании группы.
+- Копируемое приглашение с текущим адресом VX-сервера: друзья могут подключиться к тому же серверу до добавления в чаты или группы.
+- Загрузка изображений (PNG, JPEG, GIF и WebP, до 5 МБ), реакции, ответы, редактирование, удаление, индикаторы набора текста и счётчики непрочитанных сообщений.
+- Наборы стикеров, управляемые создателем: загрузите первый стикер, чтобы создать набор, добавьте до 120 стикеров, установите доступные наборы и отправляйте стикеры в беседах.
+- Отображаемое имя, описание и необязательное изображение профиля.
+- Необязательные персональные голосовые/видеозвонки через WebRTC и стандартное для браузера согласование ключей DTLS-SRTP/ECDH, когда `TOR_ONLY=false`.
 
-## Start locally
+## Локальный запуск
 
-1. Copy `.env.example` to `.env` and configure SMTP. Keep `.env` private: it is excluded from Git.
-2. Leave `TOR_ONLY=true`. This disables browser calls, whose media traffic cannot reliably be kept inside Tor.
-3. Run `node server.js` in this folder.
-4. On the host computer only, open `http://127.0.0.1:3000`. All other users open the Tor address above in Tor Browser.
-Without SMTP, local development still works: by default the one-time code is displayed in the browser response. Set `DEV_SHOW_OTP=false` before exposing the service.
+1. Скопируйте `.env.example` в `.env` и настройте SMTP. Храните `.env` в секрете: он исключён из Git.
+2. Оставьте `TOR_ONLY=true`. Этот параметр отключает браузерные звонки, потому что медиатрафик нельзя надёжно удержать внутри Tor.
+3. Выполните `node server.js` в этой папке.
+4. Только на хост-компьютере откройте `http://127.0.0.1:3000`. Все остальные пользователи должны открыть Tor-адрес в Tor Browser.
 
-## Tor-only mode
+Без SMTP локальная разработка всё равно работает: по умолчанию одноразовый код показывается в ответе браузеру. Перед публикацией сервиса установите `DEV_SHOW_OTP=false`.
 
-VX always listens on loopback (`127.0.0.1`, or `::1` if explicitly selected); it will not bind a public network interface. Publish it exclusively through the onion service shown in `tor/torrc.example`.
+## Режим только Tor
 
-`TOR_ONLY=true` is the default and disables browser WebRTC calls. That is intentional: normal browser WebRTC can create direct or TURN media paths that are not guaranteed to use Tor, even when signalling is reached through an onion address. If you deliberately set `TOR_ONLY=false`, the existing calls use WebRTC DTLS-SRTP with ECDH key agreement, but you must accept and assess that network-identity risk.
+VX всегда прослушивает только loopback-интерфейс (`127.0.0.1` либо `::1`, если он выбран явно); он не привязывается к публичному сетевому интерфейсу. Публикуйте приложение исключительно через onion-сервис, описанный в `tor/torrc.example`.
 
-The requested Gmail SMTP account is an external e-mail provider, not an onion service. If SMTP traffic must also be Tor-routed, point `SMTP_HOST` to a local SMTP relay that your operating system routes through Tor; do not claim Gmail SMTP alone is Tor-only.
+`TOR_ONLY=true` включён по умолчанию и отключает браузерные звонки WebRTC. Это сделано намеренно: обычный WebRTC в браузере может создавать прямые или TURN-маршруты для медиатрафика, которые не гарантированно проходят через Tor, даже если сигнализация доступна через onion-адрес. Если вы осознанно установите `TOR_ONLY=false`, существующие звонки будут использовать WebRTC DTLS-SRTP с согласованием ключей ECDH, но вам необходимо принять и оценить риск раскрытия сетевой идентичности.
 
-## Security model
+Указанная учётная запись Gmail SMTP — внешний почтовый провайдер, а не onion-сервис. Если SMTP-трафик тоже должен маршрутизироваться через Tor, задайте в `SMTP_HOST` локальный SMTP-релей, который операционная система направляет через Tor; не следует считать один лишь Gmail SMTP режимом только Tor.
 
-- Authentication is passwordless: only a short-lived, hashed OTP is stored. Browser sessions are random bearer tokens held in memory, expire after seven days, and disappear when the server restarts.
-- Text and attachment metadata are stored in `data/store.json`; uploads are stored under `public/uploads`. Protect this directory with filesystem encryption/backups appropriate to the deployment.
-- Calls use the browser's WebRTC stack. WebRTC negotiates DTLS-SRTP session keys with ECDH; VX does not implement unsafe home-grown call cryptography. For production calls, configure a TURN service you control in `ICE_SERVERS`, serve VX over HTTPS, and use a real domain/onion hostname.
-- This MVP is not a substitute for a security audit. Add HTTPS, rate limiting at a reverse proxy, encrypted-at-rest storage, monitoring, backups, and a production database before public use.
+## Модель безопасности
 
-## Run one shared VX node in Tor
+- Аутентификация не использует пароль: хранится только краткоживущий хешированный OTP. Сеансы браузера — это случайные токены предъявителя, которые хранятся в памяти, истекают через семь дней и исчезают после перезапуска сервера.
+- Текст и метаданные вложений хранятся в `data/store.json`, а загрузки — в `public/uploads`. Защитите эту директорию шифрованием файловой системы и резервными копиями, соответствующими среде развёртывания.
+- Звонки используют встроенный в браузер стек WebRTC. WebRTC согласовывает сеансовые ключи DTLS-SRTP с ECDH; VX не реализует небезопасную самодельную криптографию звонков. Для рабочих звонков настройте подконтрольный вам TURN-сервис в `ICE_SERVERS`, используйте HTTPS для VX и реальное доменное/onion-имя хоста.
+- Этот MVP не заменяет аудит безопасности. Перед публичным запуском добавьте HTTPS, ограничение частоты запросов на обратном прокси, шифрование данных на диске, мониторинг, резервное копирование и промышленную базу данных.
 
-VX is a single-server application, not a federated or peer-to-peer network. One host operator can run it continuously and share its onion URL; everyone else uses that same URL in Tor Browser. They do **not** need to run a server themselves. The host holds the shared accounts and messages, so if it stops, the shared service is unavailable until it starts again.
+## Запуск одного общего узла VX в Tor
 
-On Windows, with Node.js 20+ and Tor installed:
+VX — односерверное приложение, а не федеративная или peer-to-peer сеть. Оператор одного хоста может непрерывно держать его запущенным и передать его onion-URL; все остальные используют этот же URL в Tor Browser. Им не нужно самостоятельно запускать сервер. На хосте хранятся общие учётные записи и сообщения, поэтому при его остановке общий сервис недоступен до следующего запуска.
 
-1. Download this repository as ZIP (or clone it), extract it, then copy `.env.example` to `.env` and set the mail credentials on the host. Do not commit `.env`.
-2. Create a machine-local Tor configuration once: `powershell -ExecutionPolicy Bypass -File .\scripts\Initialize-TorConfig.ps1`.
-3. Start both processes: `powershell -ExecutionPolicy Bypass -File .\scripts\Start-VX.ps1 -TorExe "C:\path\to\tor.exe"`.
-4. Wait briefly, then print the shareable service address: `powershell -ExecutionPolicy Bypass -File .\scripts\Get-VXOnionAddress.ps1`.
-5. Give that `http://exampleonionaddress.onion/` address to users. They open it in Tor Browser and sign in. The server remains bound to `127.0.0.1`; only Tor exposes it.
+В Windows с установленными Node.js 20+ и Tor:
 
-The generated `tor/torrc.local`, `tor/vx_service` private key, runtime files, logs, downloads, and bundled Tor binaries are local-only and deliberately ignored by Git. For automatic startup of the host after Windows sign-in, run `scripts\Install-VX-Autostart.ps1` with the same `-TorExe` path.
+1. Скачайте этот репозиторий как ZIP-архив (или клонируйте его), распакуйте, затем скопируйте `.env.example` в `.env` и задайте на хосте учётные данные для почты. Не добавляйте `.env` в Git.
+2. Один раз создайте локальную конфигурацию Tor: `powershell -ExecutionPolicy Bypass -File .\scripts\Initialize-TorConfig.ps1`.
+3. Запустите оба процесса: `powershell -ExecutionPolicy Bypass -File .\scripts\Start-VX.ps1 -TorExe "C:\path\to\tor.exe"`.
+4. Подождите немного, затем выведите адрес сервиса, которым можно поделиться: `powershell -ExecutionPolicy Bypass -File .\scripts\Get-VXOnionAddress.ps1`.
+5. Передайте пользователям адрес вида `http://exampleonionaddress.onion/`. Они откроют его в Tor Browser и войдут в сервис. Сервер останется привязанным к `127.0.0.1`; наружу его публикует только Tor.
 
-Tor protects access to the web/signalling server. The e-mail provider configured in `.env` is a separate network service; Gmail SMTP is not Tor-only by itself. Browser WebRTC is disabled in this mode so no direct or TURN media path is created.
+Созданные файлы `tor/torrc.local`, закрытый ключ `tor/vx_service`, рабочие файлы, журналы, загрузки и поставляемые двоичные файлы Tor являются локальными и намеренно игнорируются Git. Чтобы хост запускался автоматически после входа в Windows, выполните `scripts\Install-VX-Autostart.ps1` с тем же путём `-TorExe`.
+
+Tor защищает доступ к веб-серверу и серверу сигнализации. Почтовый провайдер, настроенный в `.env`, — отдельный сетевой сервис; сам по себе Gmail SMTP не работает только через Tor. В этом режиме браузерный WebRTC отключён, поэтому не создаётся прямой или TURN-маршрут для медиатрафика.
