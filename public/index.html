@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080812">
+  <meta name="color-scheme" content="dark">
+  <title>VX — secure signal</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="scanlines"></div>
+  <main id="authView" class="auth-view">
+    <section class="auth-card glass">
+      <div class="brand-lockup"><img src="/vx-icon.png" alt="VX" class="brand-icon"><div><span class="eyebrow">PRIVATE NETWORK // 01</span><h1>VX</h1></div></div>
+      <p class="lede">A private line for the people you trust.</p>
+      <form id="emailForm" novalidate>
+        <label for="email">Your e-mail</label>
+        <div class="field-row"><input id="email" type="email" autocomplete="email" placeholder="you@example.com" required><button class="primary" type="submit">Continue <span>→</span></button></div>
+      </form>
+      <form id="codeForm" class="hidden" novalidate>
+        <label for="code">One-time code</label>
+        <div class="field-row"><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required><button class="primary" type="submit">Enter <span>↗</span></button></div>
+        <button id="changeEmail" class="text-button" type="button">Use another e-mail</button>
+      </form>
+      <p id="authStatus" class="status" aria-live="polite"></p>
+      <p class="auth-foot">Passwordless sign-in · Code expires in 10 minutes</p>
+    </section>
+  </main>
+
+  <main id="appView" class="app hidden">
+    <aside class="sidebar glass">
+      <header class="sidebar-head"><div class="mini-brand"><img src="/vx-icon.png" alt=""><span>VX</span></div><div class="sidebar-actions"><button id="newGroup" class="icon-button" title="New group" aria-label="New group">⊕</button><button id="newStickerPack" class="icon-button" title="Sticker packs" aria-label="Sticker packs">&#10024;</button><button id="shareInvite" class="icon-button" title="Copy VX invite address" aria-label="Copy VX invite address">&#128279;</button><button id="profileButton" class="icon-button" title="Profile" aria-label="Profile">◎</button><button id="logout" class="icon-button" title="Sign out" aria-label="Sign out">⏻</button></div></header>
+      <section class="identity"><span class="presence"></span><div><strong id="myName"></strong><small id="myEmail"></small></div></section>
+      <label class="search"><span>⌕</span><input id="userSearch" placeholder="Find someone" autocomplete="off"></label>
+      <div id="searchResults" class="search-results"></div>
+      <div class="section-label">Conversations <span id="chatCount"></span></div>
+      <nav id="chatList" class="chat-list" aria-label="Conversations"></nav>
+      <div class="sidebar-footer"><span class="status-dot"></span> End-to-end media via WebRTC</div>
+    </aside>
+
+    <section class="conversation glass">
+      <header id="chatHeader" class="chat-header empty"><div class="avatar">V</div><div><strong>Select a conversation</strong><small>Search for a VX contact to start</small></div><div class="call-actions"><button class="icon-button" disabled aria-label="Voice call">⌕</button><button class="icon-button" disabled aria-label="Video call">◉</button></div></header>
+      <div id="messagePane" class="messages empty-state"><div class="empty-mark">⌁</div><h2>Your signal is quiet</h2><p>Start a conversation from the search field.</p></div>
+      <form id="composer" class="composer hidden">
+        <div id="replyBar" class="reply-bar hidden"><div><small>Replying to <strong id="replyToName"></strong></small><p id="replyToText"></p></div><button id="cancelReply" class="icon-button" type="button" aria-label="Cancel reply">&times;</button></div>
+        <div class="composer-row"><input id="imageInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden><button id="attachButton" class="icon-button attach" type="button" title="Attach image" aria-label="Attach image">&#65291;</button><button id="stickerButton" class="icon-button sticker-button" type="button" title="Stickers" aria-label="Stickers">&#9786;</button><textarea id="messageText" rows="1" maxlength="4000" placeholder="Write a message&hellip;"></textarea><button class="send-button" type="submit" aria-label="Send message">&uarr;</button></div>
+        <section id="stickerPanel" class="sticker-panel hidden" aria-label="Sticker picker"></section>
+      </form>
+    </section>
+  </main>
+
+  <section id="callOverlay" class="call-overlay hidden" aria-live="polite">
+    <div class="call-card glass"><div class="call-grid"><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay muted playsinline></video></div><div class="call-info"><span class="call-pulse"></span><div><strong id="callTitle">Encrypted call</strong><small id="callDetail">WebRTC · DTLS-SRTP / ECDH</small></div></div><button id="hangup" class="hangup" type="button" aria-label="End call">⌕</button></div>
+  </section>
+  <section id="profileModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <form id="profileForm" class="modal-card glass"><div class="modal-heading"><div><span class="eyebrow">IDENTITY // VX</span><h2 id="profileTitle">Your profile</h2></div><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div><label for="profileName">Display name</label><input id="profileName" maxlength="40" required><label for="profileBio">Bio <span>optional</span></label><textarea id="profileBio" maxlength="140" rows="3" placeholder="A short signal about you"></textarea><label class="file-choice" for="avatarInput"><span>▧</span> Change profile image <input id="avatarInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden></label><button class="primary modal-submit" type="submit">Save profile <span>↗</span></button></form>
+  </section>
+  <section id="groupModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="groupTitle">
+    <form id="groupForm" class="modal-card glass"><div class="modal-heading"><div><span class="eyebrow">MULTI-SIGNAL // VX</span><h2 id="groupTitle">New group</h2></div><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div><label for="groupName">Group name</label><input id="groupName" maxlength="60" placeholder="Night operators" required><label for="groupContactSearch">Registered contacts</label><input id="groupContactSearch" autocomplete="off" placeholder="Search by name or e-mail"><div id="groupContactResults" class="member-search-results"></div><div id="selectedGroupMembers" class="member-chips" aria-live="polite"></div><label for="groupMembers">Additional VX e-mails <span>optional</span></label><textarea id="groupMembers" rows="2" placeholder="friend@example.com, ally@example.com"></textarea><p class="modal-note">A contact appears here after they have signed in to this same VX server once.</p><button class="primary modal-submit" type="submit">Create group <span>↗</span></button></form>
+  </section>
+  <section id="groupDetailsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="groupDetailsTitle"><div class="modal-card glass group-details"><div class="modal-heading"><div><span class="eyebrow">GROUP // VX</span><h2 id="groupDetailsTitle">Group members</h2></div><button class="icon-button close-modal" type="button" aria-label="Close">&times;</button></div><div id="groupMembersList" class="group-members-list"></div><p id="groupDetailsNote" class="modal-note"></p></div></section>
+  <section id="stickerPackModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="stickerPackTitle">
+    <form id="stickerPackForm" class="modal-card glass"><div class="modal-heading"><div><span class="eyebrow">STICKER FORGE // VX</span><h2 id="stickerPackTitle">Sticker packs</h2></div><button class="icon-button close-modal" type="button" aria-label="Close">&times;</button></div><label for="stickerPackSelect">Pack</label><select id="stickerPackSelect"><option value="">Create a new pack</option></select><label id="stickerPackNameLabel" for="stickerPackName">New pack name</label><input id="stickerPackName" maxlength="60" placeholder="Neon operators"><label for="stickerInput">Sticker image</label><input id="stickerInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" required><label for="stickerEmoji">Associated emoji <span>optional</span></label><input id="stickerEmoji" maxlength="16" placeholder="&#10024;"><p class="modal-note">Images stay on your VX server. Choose a pack to add more stickers, or create a new one with its first sticker.</p><button class="primary modal-submit" type="submit">Save sticker <span>&rarr;</span></button></form>
+  </section>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

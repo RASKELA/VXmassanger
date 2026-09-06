@@ -1,0 +1,13 @@
+.env
+data/store.json
+public/uploads/
+node_modules/
+tor/runtime/
+tor/vx_service/
+tor/torrc.local
+tor/tor.log
+
+tor/bundle/
+tor/downloads/
+logs/
+tools/

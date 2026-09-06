@@ -1,0 +1,14 @@
+{
+  "name": "vx-messenger",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VX — privacy-minded neon messenger MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
