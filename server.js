@@ -381,7 +381,7 @@ function safeUploadPath(name) {
 async function handle(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const route = url.pathname;
-  res.setHeader("Content-Security-Policy", "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; img-src 'self' blob:; media-src 'self' blob:; connect-src 'self'; style-src 'self'; script-src 'self'");
+  res.setHeader("Content-Security-Policy", "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; img-src 'self' blob:; media-src 'self' blob:; connect-src 'self' stun: turn:; style-src 'self'; script-src 'self'");
   if (req.method === "OPTIONS") {
     res.writeHead(204, { Allow: "GET, POST, PUT, PATCH, DELETE, OPTIONS" });
     return res.end();
@@ -389,6 +389,9 @@ async function handle(req, res) {
   if (req.method === "GET" && route === "/") return serveFile(res, path.join(PUBLIC, "index.html"), "text/html; charset=utf-8");
   if (req.method === "GET" && route === "/styles.css") return serveFile(res, path.join(PUBLIC, "styles.css"), "text/css; charset=utf-8");
   if (req.method === "GET" && route === "/app.js") return serveFile(res, path.join(PUBLIC, "app.js"), "application/javascript; charset=utf-8");
+  if (req.method === "GET" && route === "/p2p.js") return serveFile(res, path.join(PUBLIC, "p2p.js"), "application/javascript; charset=utf-8");
+  if (req.method === "GET" && route === "/relay.js") return serveFile(res, path.join(PUBLIC, "relay.js"), "application/javascript; charset=utf-8");
+  if (req.method === "GET" && route === "/p2p-config") return json(res, 200, { iceServers: config.iceServers });
   if (req.method === "GET" && route === "/vx-icon.png") return serveFile(res, path.join(ROOT, "1.png"), "image/png");
   if (req.method === "GET" && route.startsWith("/uploads/")) {
     const file = safeUploadPath(route.slice("/uploads/".length));

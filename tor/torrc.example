@@ -1,4 +1,0 @@
-# Add to the host's torrc, then restart Tor.
-# VX must listen only on 127.0.0.1:3000.
-HiddenServiceDir C:\\var\\lib\\tor\\vx_service
-HiddenServicePort 80 127.0.0.1:3000
