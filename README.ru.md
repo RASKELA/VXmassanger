@@ -43,6 +43,10 @@ npm start
 
 ## Tor onion-служба
 
+**Текущий Tor-адрес VX:** http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion
+
+Открывайте его через `http://` в Tor Browser.
+
 VX слушает только loopback-интерфейс. Направьте на него onion-службу Tor:
 
 ```torrc

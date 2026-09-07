@@ -43,6 +43,10 @@ Copy `.env.example` to `.env` and set the values needed by your deployment. `.en
 
 ## Tor onion service
 
+**Current VX Tor address:** http://slti2hfwjwzoxnb3zabqvllq75zqozrmq7irxq6jt425xtzafdatchyd.onion
+
+Open it with `http://` in Tor Browser.
+
 The VX server listens only on loopback. Point a Tor hidden service at it:
 
 ```torrc
